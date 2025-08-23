@@ -1,7 +1,7 @@
 🛡️ Zero Trust Security Lab with Microsoft 365 (E3/E5)
 
 📌 Overview
-This project is a hands-on Zero Trust home lab I built to demonstrate enterprise-grade security using Microsoft 365, Entra ID, Intune, Defender, and Purview.
+This project is a hands-on Zero Trust home lab I built to demonstrate enterprise-grade security using Microsoft 365, Entra ID, Intune, Defender, Purview and Microsoft Sentinel.
 The lab is based on Microsoft’s Zero Trust principles:
 
 ✅ Verify Explicitly  
