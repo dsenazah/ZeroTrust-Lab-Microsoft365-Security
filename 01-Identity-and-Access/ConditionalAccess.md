@@ -16,8 +16,7 @@ The goal is to ensure that **only trusted users, on trusted devices, from truste
   - **Grant:** Block access  
 - **Status:** ✅ Enabled  
 
-[
-](https://github.com/dsenazah/ZeroTrust-Lab-Microsoft365-Security/blob/576b2792053e9198ce40b55d753aaec52cdd5171/docs/screenshots/1stpolicy_require_MFA_allusers.png)
+![image alt](https://github.com/dsenazah/ZeroTrust-Lab-Microsoft365-Security/blob/576b2792053e9198ce40b55d753aaec52cdd5171/docs/screenshots/1stpolicy_require_MFA_allusers.png)
 ---
 
 ### 2. Require MFA for All Users
