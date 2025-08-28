@@ -23,7 +23,8 @@ I designed, configured, and tested each of the six Zero Trust pillars to simulat
 
 ## 🏗️ Lab Architecture
 - **Microsoft 365 E3/E5 tenant**  
-- **Entra ID** → identity and access management  
+- **Entra ID (P1)** → identity and access management (currently leveraging P1 features)  
+- **Planned Upgrade to Entra ID P2** → to enable advanced features such as Identity Protection (risk-based CA), Privileged Identity Management (PIM), and Access Reviews as the project grows  
 - **Intune (MDM/MAM)** → device compliance and management for Windows/macOS  
 - **Jamf Pro** → mobile device management for iPads (Apple ecosystem integration with Entra ID)  
 - **Microsoft Defender** → endpoint detection and response (EDR)  
@@ -36,5 +37,25 @@ I designed, configured, and tested each of the six Zero Trust pillars to simulat
 ## 🚀 Goals
 - Build an **enterprise-ready Zero Trust baseline** across all six security pillars.  
 - Continuously adapt policies and controls to reflect the **latest Microsoft and Jamf capabilities**.  
-- Provide a **real reference** for IAM, device management, compliance, and security monitoring.  
+- Expand from **Entra P1 to P2** to incorporate advanced Zero Trust features like **risk-based Conditional Access, Privileged Identity Management (PIM), and automated Access Reviews**.  
+- Provide a **living reference** for IAM, device management, compliance, and security monitoring.  
 - Showcase **hands-on expertise** with both Microsoft 365 security stack and Jamf Pro for iOS devices.  
+
+---
+
+## 📅 Future Roadmap
+- **Phase 1 (Current – E3 + P1)**  
+  - Implement Conditional Access, MFA baseline, location restrictions  
+  - Integrate Intune for Windows/macOS management  
+  - Integrate Jamf Pro for iPad management  
+  - Deploy Microsoft Defender for endpoint security  
+  - Configure Purview for DLP and sensitivity labels  
+  - Connect Sentinel for SIEM/SOAR monitoring  
+
+- **Phase 2 (Planned – E5 + P2)**  
+  - Enable **Identity Protection** (user risk & sign-in risk policies)  
+  - Implement **Privileged Identity Management (PIM)** for just-in-time admin access  
+  - Set up **Access Reviews** for automated governance  
+  - Expand Conditional Access with **authentication strengths** (phishing-resistant MFA)  
+  - Enhance compliance with **advanced Purview features** (insider risk, communication compliance)  
+  - Integrate Sentinel with custom workbooks and playbooks for automation  
