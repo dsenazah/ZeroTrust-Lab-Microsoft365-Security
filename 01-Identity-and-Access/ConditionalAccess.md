@@ -1,86 +1,176 @@
-# 🔐 Conditional Access Policies – Zero Trust Lab
+# 🔐 Conditional Access Policies – Zero Trust Lab (OfflineSec)
 
 ## 📌 Overview
-This section documents the **Conditional Access (CA) policies** configured in my Zero Trust lab to secure user identities and enforce modern authentication.  
-The goal is to ensure that **only trusted users, on trusted devices, from trusted locations** can access corporate resources.
+This document outlines the **Microsoft Entra ID Conditional Access (CA) policies** configured in my Zero Trust lab.  
+The objective is to ensure that **only trusted users, on trusted devices, from trusted locations** can access resources.  
+
+Each policy is documented in the same structure as displayed in the Microsoft Entra portal: **Assignments → Access controls → Session → State**.  
+
+# 📋 Conditional Access Policy Matrix (OfflineSec Lab)
+
+| **Policy Name**                                   | **Owner**   | **Users (Scope)**                                         | **Target Resources**       | **Grant / Enforcement**                         | **State** |
+|---------------------------------------------------|-------------|-----------------------------------------------------------|----------------------------|-------------------------------------------------|-----------|
+| Block Legacy Authentication                       | Microsoft   | All users                                                 | All resources              | Block legacy authentication clients             | ![On](https://img.shields.io/badge/On-green) |
+| Multifactor Authentication for Admins             | Microsoft   | Admin roles (excl. Break-glass, dsenazah@offlinesec.com)  | All resources              | Require MFA for privileged accounts             | ![On](https://img.shields.io/badge/On-green) |
+| Multifactor Authentication for All Users          | Microsoft   | All users                                                 | All resources              | Require MFA (default baseline policy)           | ![Off](https://img.shields.io/badge/Off-lightgrey) |
+| CA – Require MFA (Baseline All Users) – OfflineSec| User        | All company (excl. Break-glass, dsenazah@offlinesec.com)  | All resources              | Require MFA; sign-in frequency = 30 days        | ![Report-only](https://img.shields.io/badge/Report--only-orange)|
+| CA – Allow USA & Ghana Only – OfflineSec          | User        | All company (excl. Break-glass, dsenazah@offlinesec.com)  | All resources              | Block access outside USA & Ghana                | ![Report-only](https://img.shields.io/badge/Report--only-orange)|
+| CA – Block Unsupported Device Platforms – OfflineSec | User      | All company (excl. Break-glass, dsenazah@offlinesec.com)  | All resources              | Block Android, Linux, Windows Phone             |![Report-only](https://img.shields.io/badge/Report--only-orange)|
+
+
+
 
 ---
 
-## 🛠️ Policies Implemented
+### 1. Block Legacy Authentication (Microsoft)
 
-### 1. Block Legacy Authentication
-- **Why:** Legacy protocols (POP, IMAP, SMTP, etc.) bypass MFA and are vulnerable to brute-force attacks.  
-- **Configuration:**  
-  - **Assignments:** All users  
-  - **Cloud apps:** All apps  
-  - **Grant:** Block access  
-- **Status:** ✅ Enabled  
+- **Why:** Legacy protocols (POP, IMAP, SMTP, etc.) bypass MFA and are vulnerable to brute-force and password spray attacks.  
 
-![image alt](https://github.com/dsenazah/ZeroTrust-Lab-Microsoft365-Security/blob/576b2792053e9198ce40b55d753aaec52cdd5171/docs/screenshots/1stpolicy_require_MFA_allusers.png)
----
+**Assignments**  
+- **Users:** All users  
+- **Target resources:** All resources (formerly "All cloud apps")  
+- **Network (NEW):** Not configured  
+- **Conditions:**  
+  - Client apps included:  
+    - Legacy authentication clients  
+    - Exchange ActiveSync clients  
+    - Other clients  
 
-### 2. Require MFA for All Users
-- **Why:** MFA reduces the risk of account compromise.  
-- **Configuration:**  
-  - **Assignments:** All users  
-  - **Cloud apps:** All apps  
-  - **Grant:** Require multi-factor authentication  
-- **Status:** ✅ Enabled  
+**Access controls**  
+- **Grant:** Block access  
 
-📸 *Screenshot Placeholder: [MFA-All-Users.png]*  
+**Session**  
+- 0 controls selected  
 
----
-
-### 3. Require MFA for Admin Roles
-- **Why:** Admin accounts are high-value targets.  
-- **Configuration:**  
-  - **Assignments:** Directory roles (Global Admin, Intune Admin, Security Admin, etc.)  
-  - **Grant:** Require multi-factor authentication  
-- **Status:** ✅ Enabled  
-
-📸 *Screenshot Placeholder: [MFA-Admins.png]*  
+**Policy state:** On  
 
 ---
 
-### 4. Restrict Access by Country (Geo-Blocking)
-- **Why:** Reduce attack surface by allowing sign-ins only from authorized countries.  
-- **Configuration:**  
-  - **Assignments:** All users  
-  - **Conditions → Locations:**  
-    - Include: United States 🇺🇸, Ghana 🇬🇭  
-    - Exclude: All other countries  
-  - **Grant:** Require MFA (if from allowed country) / Block (if from other locations)  
-- **Status:** ✅ Enabled  
+### 2. Multifactor Authentication for Admins (Microsoft)
 
-📸 *Screenshot Placeholder: [Geo-Block-USA-Ghana.png]*  
+- **Why:** Admin accounts are privileged targets and require stronger protection. MFA ensures an additional layer of security against credential theft.  
 
----
+**Assignments**  
+- **Users:**  
+  - Specific users included: Microsoft-selected admin roles  
+  - Specific users excluded:  
+    - Break-glass accounts  
+    - dsenazah@offlinesec.com  
+- **Target resources:** All resources (formerly "All cloud apps")  
+- **Network (NEW):** Not configured  
+- **Conditions:** 0 conditions selected  
 
-### 5. Block Unsupported Devices
-- **Why:** Prevent users from logging in on jailbroken, rooted, or unknown platforms.  
-- **Configuration:**  
-  - **Assignments:** All users  
-  - **Conditions → Device platform:** Block unsupported OS (Linux, unknown mobile devices)  
-  - **Grant:** Block access  
-- **Status:** ✅ Enabled  
+**Access controls**  
+- **Grant:** Require multifactor authentication  
 
-📸 *Screenshot Placeholder: [Unsupported-Devices.png]*  
+**Session**  
+- 0 controls selected  
+
+**Policy state:** On  
 
 ---
 
-## ✅ Testing & Verification
-- Attempted login with legacy protocols → **Blocked**  
-- Admin login without MFA → **Blocked**  
-- User login from outside US/Ghana → **Blocked**  
-- User login from compliant device in Ghana → **Successful**  
+### 3. Multifactor Authentication for All Users (Microsoft)
 
-📸 *Screenshot Placeholder: [Testing-Results.png]*  
+- **Why:** Provides tenant-wide MFA enforcement for all users. This is Microsoft’s default baseline control. In this lab it is disabled and replaced with a custom Baseline MFA policy for more flexibility and exclusions.  
+
+**Assignments**  
+- **Users:** All users  
+- **Target resources:** All resources (formerly "All cloud apps")  
+- **Network (NEW):** Not configured  
+- **Conditions:** 0 conditions selected  
+
+**Access controls**  
+- **Grant:** Require multifactor authentication  
+
+**Session**  
+- 0 controls selected  
+
+**Policy state:** Off  
 
 ---
 
-## 📊 Key Learnings
-- Conditional Access is the **first line of defense** in Zero Trust.  
-- MFA + Geo-blocking + Device compliance **significantly reduces attack surface**.  
-- Testing from multiple locations/devices validates the policies in real-world scenarios.  
+### 4. CA – Require MFA (Baseline All Users) – OfflineSec
+
+- **Why:** Enforce multifactor authentication across the tenant to reduce risk of account compromise. This is the custom baseline MFA policy replacing Microsoft’s default “MFA for all users.”  
+
+**Assignments**  
+- **Users and groups:**  
+  - Included: All company (allcompany@offlinesec.com)  
+  - Excluded:  
+    - Break-glass accounts  
+    - dsenazah@offlinesec.com  
+- **Target resources:** All resources (formerly "All cloud apps")  
+- **Network (NEW):** Not configured  
+- **Conditions:** 0 conditions selected  
+
+**Access controls**  
+- **Grant:** Require multifactor authentication  
+- **Multiple controls:** Require all selected controls  
+
+**Session**  
+- Sign-in frequency: 30 days  
+- Persistent browser session: Not configured  
+
+**Policy state:** Report-only  
+
+---
+
+### 5. CA – Allow USA & Ghana Only – OfflineSec
+
+- **Why:** Restrict access to trusted geographies (United States and Ghana) to reduce attack surface and prevent logins from risky regions.  
+
+**Assignments**  
+- **Users and groups:**  
+  - Included: All company (allcompany@offlinesec.com)  
+  - Excluded:  
+    - Break-glass accounts  
+    - dsenazah@offlinesec.com  
+- **Target resources:** All resources (formerly "All cloud apps")  
+- **Network (NEW):**  
+  - Included: Any network or location  
+  - Excluded: *Main office* (United States), *Ghana office* (Ghana)  
+
+**Conditions**  
+- Device platform: Any device  
+- Locations:  
+  - Included: Any network or location  
+  - Excluded: *Main office*, *Ghana office*  
+
+**Access controls**  
+- **Grant:** Block access  
+
+**Session**  
+- 0 controls selected  
+
+**Policy state:** Report-only  
+
+---
+
+### 6. CA – Block Unsupported Device Platforms – OfflineSec
+
+- **Why:** Restrict access so only supported device platforms (Windows, macOS, iOS) can connect. This prevents logins from unsupported or high-risk platforms (Android, Linux, Windows Phone).  
+
+**Assignments**  
+- **Users and groups:**  
+  - Included: All company (allcompany@offlinesec.com)  
+  - Excluded:  
+    - Break-glass accounts  
+    - dsenazah@offlinesec.com  
+- **Target resources:** All resources (formerly "All cloud apps")  
+- **Network (NEW):** Not configured  
+
+**Conditions**  
+- Device platform:  
+  - **Included:** Android, Windows Phone, Linux  
+  - **Excluded:** iOS, Windows, macOS  
+
+**Access controls**  
+- **Grant:** Block access  
+
+**Session**  
+- 0 controls selected  
+
+**Policy state:** Report-only  
 
 ---
