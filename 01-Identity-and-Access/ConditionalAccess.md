@@ -19,6 +19,7 @@ Each policy is documented in the same structure as displayed in the Microsoft En
 
 
 ![image alt](https://github.com/dsenazah/ZeroTrust-Lab-Microsoft365-Security/blob/5c6f6a84e3496df3038c9b6b9f800f641182807e/docs/screenshots/AllpoliciesView.png)
+CLICK ON IMAGE TO GET A CLEAR VIEW OF IT .
 
 
 
