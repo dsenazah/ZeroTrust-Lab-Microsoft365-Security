@@ -18,6 +18,9 @@ Each policy is documented in the same structure as displayed in the Microsoft En
 | CA – Block Unsupported Device Platforms – OfflineSec | User      | All company (excl. Break-glass, dsenazah@offlinesec.com)  | All resources              | Block Android, Linux, Windows Phone             |![Report-only](https://img.shields.io/badge/Report--only-orange)|
 
 
+![image alt](https://github.com/dsenazah/ZeroTrust-Lab-Microsoft365-Security/blob/5c6f6a84e3496df3038c9b6b9f800f641182807e/docs/screenshots/AllpoliciesView.png)
+
+
 
 
 ---
