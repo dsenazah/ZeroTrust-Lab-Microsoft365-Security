@@ -1,0 +1,126 @@
+# 💻 Device Configuration Policies – Zero Trust Lab (OfflineSec)
+
+## 📌 Overview  
+This document outlines the **Microsoft Intune device configuration policies** applied in my Zero Trust lab.  
+The objective is to ensure that **only secure, compliant, and monitored endpoints** are trusted to access resources.  
+
+Each policy is documented in the same structure as displayed in the Intune portal: **Assignments → Settings → Enforcement → State**.  
+
+---
+
+# 📋 Device Configuration Policy Matrix (OfflineSec Lab)
+
+| **Policy Name**                                    | **Owner** | **Scope (Users/Devices)** | **Purpose**                  | **Key Enforcements**                           | **State** |
+|----------------------------------------------------|-----------|----------------------------|------------------------------|------------------------------------------------|-----------|
+| WIN_Base_Windows_24H2 (OS baseline)                | User      | Pilot users                | Windows 10/11 OS hardening   | Firewall, BitLocker (OS), Credential Guard, LAPS, SmartScreen | ![On](https://img.shields.io/badge/On-green) |
+| WIN_Base_Defender_24H1 (Defender baseline)         | User      | Pilot users                | Defender AV baseline         | Defender AV, SmartScreen, Tamper Protection, ASR baseline rules | ![On](https://img.shields.io/badge/On-green) |
+| EDGE_Base_v128 (Edge baseline)                     | User      | Pilot users                | Browser hardening            | SmartScreen, password leak detection, block basic auth | ![Removed](https://img.shields.io/badge/Removed-lightgrey) |
+| Win-10 MDE (Defender for Endpoint onboarding)      | User      | Pilot users                | Endpoint telemetry (MDE)     | Device telemetry onboarded to Microsoft 365 Security | ![On](https://img.shields.io/badge/On-green) |
+| Win-OIB -HealthMonitoring-D-EndpointAnalytics-v3.4 | User      | Pilot users                | Device health analytics      | Startup performance, compliance drift signals | ![On](https://img.shields.io/badge/On-green) |
+| Win-OIB-ES-ASRRules-D-v3.1 (Audit Mode)            | User      | Pilot users                | Attack Surface Reduction     | Office child process, LSASS protection, USB exec (Audit) | ![Audit](https://img.shields.io/badge/Audit-orange) |
+
+---
+
+![image alt](../screenshots/intune-device-policies.png)  
+*CLICK IMAGE TO VIEW FULL SCREENSHOT*
+
+---
+
+### 1. WIN_Base_Windows_24H2 (OS Baseline)  
+- **Why:** Provides Microsoft’s recommended hardening for Windows 10/11, ensuring secure configuration at the OS level.  
+**Assignments**  
+- **Users/Devices:** Pilot group (laptops/desktops)  
+- **Settings:** Firewall enabled, Credential Guard ON, BitLocker required (OS drive), LAPS configured  
+**Enforcement**  
+- Device not compliant if settings not met  
+- Telemetry flows into compliance reports  
+
+---
+
+### 2. WIN_Base_Defender_24H1 (Defender Baseline)  
+- **Why:** Enforces Defender Antivirus and endpoint protection against malware and phishing.  
+**Assignments**  
+- **Users/Devices:** Pilot group  
+- **Settings:** Defender AV enabled, SmartScreen ON, ASR rules (baseline set), Tamper Protection enforced  
+**Enforcement**  
+- Prevents disabling AV/firewall by local users  
+
+---
+
+### 3. EDGE_Base_v128 (Edge Baseline)  
+- **Why:** Harden Microsoft Edge against web-based attacks.  
+**Assignments**  
+- **Users/Devices:** Pilot group  
+- **Settings:** SmartScreen, block insecure auth, password leak detection  
+**Enforcement**  
+- Initially tested, later removed to reduce overlap with OS baseline  
+
+---
+
+### 4. Win-10 MDE (Defender for Endpoint Onboarding)  
+- **Why:** Provides full telemetry into Microsoft 365 Security and Defender for Endpoint.  
+**Assignments**  
+- **Users/Devices:** Pilot devices  
+- **Settings:** Onboarding package deployed via Intune  
+**Validation:**  
+- Onboarding confirmed with script + telemetry  
+- EICAR test file successfully detected  
+
+---
+
+### 5. Endpoint Analytics (Health Monitoring)  
+- **Why:** Capture endpoint health + performance signals for proactive monitoring.  
+**Assignments**  
+- **Users/Devices:** Pilot group  
+- **Settings:** Startup performance, app reliability, compliance drift tracking  
+
+---
+
+### 6. Attack Surface Reduction – Audit Mode  
+- **Why:** Restrict risky processes (Office spawning child processes, credential theft attempts).  
+**Assignments**  
+- **Users/Devices:** Pilot group  
+- **Settings:** ASR rules set to **Audit** (not Block)  
+**Next Step:** Flip to Block mode once stable  
+
+---
+
+## 📊 Zero Trust Mapping  
+
+| Policy Name | Zero Trust Principle | Zero Trust Pillar | Purpose / Alignment |
+|-------------|----------------------|-------------------|---------------------|
+| **WIN_Base_Windows_24H2** (OS baseline) | Verify Explicitly / Assume Breach | **Devices** | Validates device health and applies encryption + firewall before trust. |
+| **WIN_Base_Defender_24H1** (Defender baseline) | Assume Breach | **Devices / Security Ops** | Ensures AV + SmartScreen protections always on, with telemetry for detection. |
+| **EDGE_Base_v128** (Edge baseline) | Verify Explicitly | **Applications / Data** | Protects browsing activity with SmartScreen and credential protection. |
+| **Win-10 MDE** (Defender onboarding) | Assume Breach | **Devices / Security Ops** | Provides endpoint telemetry to detect/respond to compromises. |
+| **Endpoint Analytics (Health Monitoring)** | Verify Explicitly | **Infrastructure / Devices** | Collects device signals (startup, compliance drift) to confirm trustworthiness. |
+| **ASR Rules (Audit Mode)** | Least Privilege / Assume Breach | **Devices / Applications** | Prevents risky app behaviors (Office → child process, LSASS theft) and prepares for Block mode. |
+
+---
+
+## ✅ Achievements to Date  
+- **Applied Microsoft Security Baselines**: OS + Defender.  
+- **Resolved policy conflicts**: Baseline owns OS encryption; custom policy enforces removable drive controls.  
+- **Onboarded devices into MDE**: Telemetry confirmed in Microsoft 365 Security portal.  
+- **Validated detection**: EICAR test successfully flagged.  
+- **Enabled Endpoint Analytics**: Visibility into health & performance signals.  
+- **ASR audit mode active**: Capturing signals, preparing transition to Block.  
+
+---
+
+## 🚀 Next Planned Device Policies  
+- **WIN_Config_DeviceRestrictions** → Block USB write, disable sideloading, restrict Store.  
+- **WIN_Config_OneDriveKFM** → Redirect Desktop, Documents, Pictures into OneDrive.  
+- **WIN_UpdateRing_Standard** → Configure Windows Update for Business for fast patching.  
+- **ASR (Block Mode)** → Move from Audit → Block to enforce least privilege app execution.  
+
+---
+
+## 🔑 Zero Trust Takeaway  
+The **Devices pillar** ensures that only **trusted, hardened, and monitored endpoints** can access critical resources.  
+By layering **baselines, compliance, and telemetry**, devices are validated against Zero Trust principles:  
+- **Verify Explicitly** → Device health validated before trust  
+- **Least Privilege** → ASR & restrictions enforce minimal access  
+- **Assume Breach** → Defender + MDE telemetry ensure detection & response  
+
+---
